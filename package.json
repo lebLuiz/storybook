@@ -1,0 +1,38 @@
+{
+  "name": "ship-components",
+  "version": "0.1.0",
+  "private": false,
+  "main": "./dist/teste-npm-button-default.common.js",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
+    "build:npm": "vue-cli-service build --target lib --name teste-npm-button-default src/index.js"
+  },
+  "dependencies": {
+    "@storybook/cli": "^6.1.21",
+    "core-js": "^3.6.5",
+    "init": "^0.1.2",
+    "sb": "^6.1.21",
+    "vue": "^2.6.12"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@storybook/addon-actions": "^6.1.21",
+    "@storybook/addon-essentials": "^6.1.21",
+    "@storybook/addon-links": "^6.1.21",
+    "@storybook/vue": "^6.1.21",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-loader": "^8.2.2",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
