@@ -2,13 +2,11 @@
   "name": "ship-components",
   "version": "0.1.0",
   "private": false,
-  "main": "./dist/teste-npm-button-default.common.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "build:npm": "vue-cli-service build --target lib --name teste-npm-button-default src/index.js"
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@storybook/cli": "^6.1.21",

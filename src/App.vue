@@ -1,25 +1,25 @@
 <template>
   <div id="app">
-    <Button
+    <shipButton
       label="my button"
       typeButton="submite"
-      :outline="false"
-      :block="false"
+      styleOutline="true"
+      styleBlock="true"
       :isDisable="false"
-      :loading="false"
+      :loading="true"
       :icon="true"
     >
-    </Button>
+    </shipButton>
   </div>
 </template>
 
 <script>
-import Button from './components/ShipButton.vue'
+import shipButton from './components/ShipButton'
 
 export default {
   name: 'App',
   components: {
-    Button
+    shipButton
   }
 }
 </script>

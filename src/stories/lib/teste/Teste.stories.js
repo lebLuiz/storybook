@@ -1,4 +1,4 @@
-import Button from "../../../components/shipButton.vue";
+import Button from "../../../components/ShipButton.vue";
 
 export default {
   title: "Ship Button",
