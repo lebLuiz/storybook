@@ -1,10 +1,10 @@
 <template>
 	<div class="div-input-field">
-		<input class="class-input" :type="type"
-			@input="sendValue" >
+		<input class="class-input" :type="type" :class="{ '--disabled': disabled }"
+			@input="sendValue" :disabled="disabled" >
 
 		<i v-if="typeField==='password'"
-			class="icon-field-password" 
+			class="icon-field-password" :class="{ '--disabled': disabled }"
 			@click.prevent="changeType" />
 		
 	</div>
@@ -39,6 +39,11 @@ export default {
 		filterMethod: {
 			type: Function,
 			required: false,
+		},
+
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 
@@ -88,6 +93,11 @@ $maxWidthMobile: 425px;
 
 		width: 24px;
 		height: 18px;
+
+		&.--disabled {
+			display: none;
+			z-index: -1;
+		}
 	}
 }
 
@@ -128,6 +138,21 @@ $maxWidthMobile: 425px;
   /* texto ativado */
 
   color: #000000;
+
+  &.--disabled {
+	cursor: not-allowed;
+	color: white;
+	background-color: rgba(184, 184, 184, 0.377);
+	border: 0.1px solid rgba(56, 56, 56, 0.11);
+
+
+	&:hover {
+		transform: scale(1.005);
+		background-color: rgba(139, 139, 139, 0.089);
+		transition: 0.2s;
+	}
+
+  }
 }
 
 </style>

@@ -14,6 +14,8 @@
     <TextFormField
       label="E-mail"
       type="email" 
+
+      :inputDisabled="inputDisabled"
       
       messageNotification="Digite no mínimo seis caracteres, com pelo menos um número ou caractere especial.*"
 
@@ -58,6 +60,12 @@ export default {
     TextFormField,
   },
 
+  data() {
+    return {
+      inputDisabled: false,
+    }
+  },
+
   methods: {
     // Funções de exemplo:
     handleEmail(value) {
@@ -68,6 +76,7 @@ export default {
       } else if(!regexValidation.test(value)) {
         return console.log('Please, enter a valid email')
       } else {
+        this.inputDisabled = true;
         return console.log('email is valid')
       }
     },

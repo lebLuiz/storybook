@@ -4,6 +4,7 @@
       :labelField="label" />
 
     <InputField 
+      :disabled="inputDisabled"
       :typeField="type"
       :filterMethod="filterMethod"
       @valueInput="getValue" />
@@ -36,6 +37,12 @@ export default {
     type: {
       type: String,
       required: true,
+    },
+
+    // Disables:
+    inputDisabled: {
+      type: Boolean,
+      required: false,
     },
 
     // MSG´s:
