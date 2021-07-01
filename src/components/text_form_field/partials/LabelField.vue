@@ -1,5 +1,5 @@
 <template>
-  <label class="class-label">{{ labelField }}:</label>
+  <label class="label">{{ labelField }}:</label>
 </template>
 
 <script>
@@ -21,23 +21,14 @@ export default {
   src: url(../../../assets/fonts/Montserrat-Regular.ttf);
 }
 
-.class-label {
-  // position: absolute;
+.label {
   margin-bottom: 8px;
-
-  /* BODY */
 
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
   line-height: 17px;
-  /* identical to box height */
-
-  display: flex;
-  align-items: center;
-
-  /* preto */
 
   color: #000000;
 }

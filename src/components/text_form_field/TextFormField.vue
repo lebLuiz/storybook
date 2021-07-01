@@ -1,5 +1,5 @@
 <template>
-  <div class="div-text-form-field">
+  <div class="text-form-field">
     <LabelField 
       :labelField="label" />
 
@@ -51,10 +51,6 @@ export default {
       required: false,
     },
 
-    startMessage: {
-      type: String,
-      required: false,
-    },
     errorMessage: {
       type: String,
       required: false,
@@ -85,7 +81,7 @@ export default {
         valueInput: this.valueInput,
 
         messageNotification: this.messageNotification,
-        startMessage: this.startMessage,
+
         errorMessage: this.errorMessage,
         error: this.error,
 
@@ -104,7 +100,7 @@ export default {
 
 <style lang="scss" scoped>
 
-.div-text-form-field {
+.text-form-field {
   display: flex;
   flex-direction: column;
   margin: 16px 0px;

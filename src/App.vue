@@ -15,13 +15,12 @@
       label="E-mail"
       type="email" 
 
-      :inputDisabled="inputDisabled"
+      :inputDisabled="false"
       
       messageNotification="Digite no mínimo seis caracteres, com pelo menos um número ou caractere especial.*"
 
-      startMessage="Digite o valor"
-      errorMessage=""
-      :error="true"
+      :errorMessage="errorMessage"
+      :error="actionErrorMsg"
       
       :filterMethod="handleEmail" />
 
@@ -31,7 +30,6 @@
       
       messageNotification="Digite no mínimo seis caracteres, com pelo menos um número ou caractere especial.*"
 
-      startMessage="Digite o valor"
       errorMessage=""
       :error="false" />
 
@@ -63,6 +61,8 @@ export default {
   data() {
     return {
       inputDisabled: false,
+      actionErrorMsg: false,
+      errorMessage: '',
     }
   },
 
@@ -74,9 +74,12 @@ export default {
       if (value == '') {
         return console.log('Email is null')
       } else if(!regexValidation.test(value)) {
+        this.actionErrorMsg = true;
+        this.errorMessage = "Please, enter a valid email";
         return console.log('Please, enter a valid email')
       } else {
         this.inputDisabled = true;
+        this.actionErrorMsg = false;
         return console.log('email is valid')
       }
     },
