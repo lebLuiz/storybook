@@ -11,6 +11,8 @@
     >
     </shipButton> -->
 
+
+    <!-- TEXT_FORM_FIELD'S: -->
     <TextFormField
       label="E-mail"
       type="email" 
@@ -44,18 +46,28 @@
 
       :filterMethod="handleNumber" />
 
+
+    <!-- BUTTON: -->
+
+    <Button 
+      text="Entrar"
+      type="default"
+      :disabled="false" />
+
   </div>
 </template>
 
 <script>
 // import shipButton from './components/ShipButton'
 import TextFormField from './components/text_form_field/TextFormField'
+import Button from './components/button/Button'
 
 export default {
   name: 'App',
   components: {
     // shipButton,
     TextFormField,
+    Button,
   },
 
   data() {
