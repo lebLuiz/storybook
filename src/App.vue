@@ -11,6 +11,11 @@
     >
     </shipButton> -->
 
+    <!-- HEADER: -->
+    <HeaderMenu 
+      
+      />
+
 
     <!-- TEXT_FORM_FIELD'S: -->
     <TextFormField
@@ -49,9 +54,11 @@
 
     <!-- BUTTON: -->
 
-    <Button 
+    <Button
+      @onClick="soma(5, 65)"
       text="Entrar"
-      type="default"
+      typeColor="secondary"
+      :loading="false"
       :disabled="false" />
 
   </div>
@@ -61,6 +68,7 @@
 // import shipButton from './components/ShipButton'
 import TextFormField from './components/text_form_field/TextFormField'
 import Button from './components/button/Button'
+import HeaderMenu from './components/header_menu/HeaderMenu'
 
 export default {
   name: 'App',
@@ -68,6 +76,7 @@ export default {
     // shipButton,
     TextFormField,
     Button,
+    HeaderMenu,
   },
 
   data() {
@@ -80,6 +89,9 @@ export default {
 
   methods: {
     // Funções de exemplo:
+    soma(v1, v2) {
+      console.log(v1 + v2);
+    },
     handleEmail(value) {
       let regexValidation = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;
 

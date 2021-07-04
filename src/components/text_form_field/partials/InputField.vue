@@ -117,9 +117,9 @@ $maxWidthMobile: 425px;
   outline: none;
 
   width: 100%;
-  height: 44px;
+  min-height: 44px;
 
-  padding: 8px 24px;
+  padding: 0 24px;
 
   background: #ffffff;
   box-shadow: 0px 1px 24px rgba(35, 34, 39, 0.1);
@@ -134,11 +134,13 @@ $maxWidthMobile: 425px;
   line-height: 17px;
 
   align-items: center;
+  display: flex;
+  justify-content: center;
 
   color: #000000;
 
   &.--password-type {
-	padding: 8px 70px 8px 24px;
+	  padding: 0 70px 0 24px;
   }
 
   &.--disabled {

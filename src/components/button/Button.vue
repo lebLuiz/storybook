@@ -1,6 +1,7 @@
 <template>
-    <button class="btn" :class="handleTypesBtn" :disabled="disabled">
-        {{ text }}
+    <button class="btn" :class="handleTypesBtn"
+        :disabled="disabled || loading" @click="$emit('onClick')">
+        {{ loading ? 'Loading...' : text }}
     </button>
 </template>
 
@@ -14,13 +15,21 @@ export default {
             type: String,
             required: true,
         },
-        type: {
+        typeColor: {
             type: String,
-            default: 'default'
+            default: 'primary'
         },
         disabled: {
             type: Boolean,
             default: false,
+        },
+        loading: {
+            type: Boolean,
+            default: false,
+        },
+        clickMethod: {
+            type: Function,
+            required: false,
         },
     },
 
@@ -28,15 +37,11 @@ export default {
         handleTypesBtn() {
             return {
                 //Types:
-                '--default': this.type === 'default' ? true : false,
-                '--primary': this.type === 'primary' ? true : false,
-                '--success': this.type === 'success' ? true : false,
-                '--info': this.type === 'info' ? true : false,
-                '--warning': this.type === 'warning' ? true : false,
-                '--danger': this.type === 'danger' ? true : false,
+                '--primary': this.typeColor === 'primary' ? true : false,
+                '--secondary': this.typeColor === 'secondary' ? true : false,
 
                 //Disabled:
-                '--disabled': this.disabled,
+                '--disabled': this.disabled || this.loading,
             };
         }
     },
@@ -55,8 +60,8 @@ $maxWidthMobile: 425px;
 $colorWhite: #FFFFFF;
 
 .btn {
-    background: $colorWhite;
-    color: #000000;
+    background: #FBBE2F;
+    color: $colorWhite;
     
     box-shadow: 0px 1px 24px rgba(35, 34, 39, 0.1);
     border-radius: 40px;
@@ -65,8 +70,12 @@ $colorWhite: #FFFFFF;
     cursor: pointer;
 
     width: 100%;
-    max-width: 330px;
-    height: 45px;
+    max-width: $maxWidthMobile;
+    min-height: 44px;
+
+    // display: flex;
+    justify-content: center;
+    align-items: center;
 
     // Text:
     font-family: "Montserrat", sans-serif;

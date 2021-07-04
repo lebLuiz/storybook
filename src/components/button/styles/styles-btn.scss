@@ -1,80 +1,13 @@
 
 &.--disabled {
     cursor: not-allowed;
-    background: #e5e5e5a8;
-    color: #00000063;
+    background: #FBBE2F;
+    color: $colorWhite;
     border: 0.1px solid rgba(56, 56, 56, 0.11);
-
-    &:hover {
-        transform: scale(1.005);
-        background-color: rgba(139, 139, 139, 0.089);
-        transition: 0.2s;
-    }
 }
 
 // Types_Styles:
-&.--default {
-    background: $colorWhite;
-    color: #000000;
-    &.--disabled {
-        cursor: not-allowed;
-        background: #e5e5e5a8;
-        color: #00000063;
-        border: 0.1px solid rgba(56, 56, 56, 0.11);
-
-        &:hover {
-            transform: scale(1.005);
-            background-color: rgba(139, 139, 139, 0.089);
-            transition: 0.2s;
-        }
-    }
-}
 &.--primary {
-    background: linear-gradient(90deg, #8DF8A5 0.27%, rgba(54, 187, 255, 0.466004) 83.17%, rgba(193, 247, 147, 0.0001) 100%);
-    color: $colorWhite;
-    &.--disabled {
-        cursor: not-allowed;
-        background: linear-gradient(90deg, #8DF8A5 0.27%, rgba(54, 187, 255, 0.466004) 83.17%, rgba(193, 247, 147, 0.0001) 100%);
-        color: #00000040;
-        border: 0.1px solid rgba(56, 56, 56, 0.11);
-
-        &:hover {
-            transform: scale(1.005);
-            transition: 0.2s;
-        }
-    }
-}
-&.--success {
-    background: #31D0AD;
-    color: $colorWhite;
-    &.--disabled {
-        cursor: not-allowed;
-        background: #31d0ae88;
-        border: 0.1px solid rgba(56, 56, 56, 0.11);
-
-        &:hover {
-            transform: scale(1.005);
-            background-color: #31d0ae5d;
-            transition: 0.2s;
-        }
-    }
-}
-&.--info {
-    background: #757575;
-    color: $colorWhite;
-    &.--disabled {
-        cursor: not-allowed;
-        background: #757575ab;
-        border: 0.1px solid rgba(56, 56, 56, 0.11);
-
-        &:hover {
-            transform: scale(1.005);
-            background-color: #7575756c;
-            transition: 0.2s;
-        }
-    }
-}
-&.--warning {
     background: #FBBE2F;
     color: $colorWhite;
     &.--disabled {
@@ -82,26 +15,16 @@
         background: #fbbe2fa6;
         color: #00000040;
         border: 0.1px solid rgba(56, 56, 56, 0.11);
-
-        &:hover {
-            transform: scale(1.005);
-            background-color: #fbbe2f6c;
-            transition: 0.2s;
-        }
     }
 }
-&.--danger {
-    background: #EB5757;
-    color: $colorWhite;
+
+&.--secondary {
+    background: $colorWhite;
+    color: #000000;
     &.--disabled {
         cursor: not-allowed;
-        background: #eb5757b2;
+        background: #e5e5e5a8;
+        color: #00000063;
         border: 0.1px solid rgba(56, 56, 56, 0.11);
-
-        &:hover {
-            transform: scale(1.005);
-            background-color: #eb57575d;
-            transition: 0.2s;
-        }
     }
 }
