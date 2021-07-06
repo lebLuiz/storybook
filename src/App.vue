@@ -12,9 +12,13 @@
     </shipButton> -->
 
     <!-- HEADER: -->
-    <HeaderMenu 
-      
-      />
+    <HeaderMenu />
+
+
+    <H1
+      text="Entrar"/>
+    <H2
+      text="Já sou cliente"/>
 
 
     <!-- TEXT_FORM_FIELD'S: -->
@@ -32,7 +36,7 @@
       :filterMethod="handleEmail" />
 
     <TextFormField
-      label="Password"
+      label="Senha"
       type="password"
       
       messageNotification="Digite no mínimo seis caracteres, com pelo menos um número ou caractere especial.*"
@@ -40,7 +44,9 @@
       errorMessage=""
       :error="false" />
 
-    <TextFormField
+    <LinkText title="Esqueceu sua senha?" :size="14" href="https://www.google.com/" target="_blank" />
+
+    <!-- <TextFormField
       label="Age"
       type="number"
       
@@ -49,17 +55,32 @@
       errorMessage=""
       :error="false"
 
-      :filterMethod="handleNumber" />
+      :filterMethod="handleNumber" /> -->
 
 
     <!-- BUTTON: -->
+    <div style="display: flex; flex-direction: column;">
+      <Button style="margin-bottom: 16px; margin-top: 37px;"
+        @onClick="soma(5, 65)"
+        text="Entrar"
+        typeColor="secondary"
+        :loading="false"
+        :disabled="false" />
 
-    <Button
-      @onClick="soma(5, 65)"
-      text="Entrar"
-      typeColor="secondary"
-      :loading="false"
-      :disabled="false" />
+      <Button
+        @onClick="soma(5, 65)"
+        text="Cadastrar"
+        typeColor="primary"
+        :loading="false"
+        :disabled="false" />
+    </div>
+
+    <Footer style="margin: 16px 0"
+      :withLink="true"
+      titleLink="Termos de Uso"
+      hrefLink="https://www.google.com/"
+      
+      :images="images" />
 
   </div>
 </template>
@@ -69,6 +90,10 @@
 import TextFormField from './components/text_form_field/TextFormField'
 import Button from './components/button/Button'
 import HeaderMenu from './components/header_menu/HeaderMenu'
+import H1 from './components/typographies/H1'
+import H2 from './components/typographies/H2'
+import Footer from './components/footer/Footer'
+import LinkText from './components/link_text/LinkText'
 
 export default {
   name: 'App',
@@ -77,6 +102,9 @@ export default {
     TextFormField,
     Button,
     HeaderMenu,
+    H1, H2,
+    Footer,
+    LinkText,
   },
 
   data() {
@@ -84,6 +112,12 @@ export default {
       inputDisabled: false,
       actionErrorMsg: false,
       errorMessage: '',
+
+      images: [
+        'https://devkico.itexto.com.br/wp-content/uploads/2017/08/logotipo.png',
+        'https://www.comofazerumsite.com/imagens/HTML5.png',
+        'https://terminalroot.com.br/assets/img/css/css.png',
+      ],
     }
   },
 

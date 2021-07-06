@@ -38,7 +38,7 @@ export default {
 
 <style lang="scss">
 @font-face {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat';
   src: url(../../../assets/fonts/Montserrat-Regular.ttf);
 }
 
@@ -47,7 +47,7 @@ export default {
   max-width: 425px;
 
   /* BODY */
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat';
   font-style: normal;
   font-weight: normal;
   font-size: 12px;

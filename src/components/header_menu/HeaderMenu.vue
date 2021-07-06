@@ -69,6 +69,7 @@
 import VectorBottom from './partials/VectorBottom'
 
 export default {
+    name: 'HeaderMenu',
     components: {
         VectorBottom,
     },

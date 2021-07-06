@@ -52,7 +52,7 @@ export default {
 <style lang="scss" scoped>
 
 @font-face {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Montserrat";
   src: url(../../assets/fonts/Montserrat-Regular.ttf);
 }
 
@@ -78,7 +78,7 @@ $colorWhite: #FFFFFF;
     align-items: center;
 
     // Text:
-    font-family: "Montserrat", sans-serif;
+    font-family: "Montserrat";
     font-style: normal;
     font-weight: bold;
     font-size: 14px;

@@ -87,7 +87,7 @@ export default {
 
 <style lang="scss" scoped>
 @font-face {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Montserrat";
   src: url(../../../assets/fonts/Montserrat-Regular.ttf);
 }
 
@@ -127,7 +127,7 @@ $maxWidthMobile: 425px;
   border: none;
 
   // FONT:
-  font-family: "Montserrat", sans-serif;
+  font-family: "Montserrat";
   font-style: normal;
   font-weight: normal;
   font-size: 14px;

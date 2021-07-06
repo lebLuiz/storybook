@@ -17,14 +17,14 @@ export default {
 <style lang="scss">
 
 @font-face {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat';
   src: url(../../../assets/fonts/Montserrat-Regular.ttf);
 }
 
 .label {
   margin-bottom: 8px;
 
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat';
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
