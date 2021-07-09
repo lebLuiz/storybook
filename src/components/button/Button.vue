@@ -1,5 +1,5 @@
 <template>
-    <button class="btn" :class="handleTypesBtn"
+    <button :class="[ { 'btn': !rounded, 'btn-rounded': rounded }, handleTypesBtn]"
         :disabled="disabled || loading" @click="$emit('onClick')">
         {{ loading ? 'Loading...' : text }}
     </button>
@@ -30,6 +30,12 @@ export default {
         clickMethod: {
             type: Function,
             required: false,
+        },
+
+        //Button Rounded:
+        rounded: {
+            type: Boolean,
+            default: false,
         },
     },
 
@@ -88,6 +94,45 @@ $colorWhite: #FFFFFF;
 
     @import "~@/components/button/styles/styles-btn.scss";
 
+}
+
+.btn-rounded {
+    background: #FBBE2F;
+    color: $colorWhite;
+    
+    box-shadow: 0px 1px 24px rgba(35, 34, 39, 0.1);
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    cursor: pointer;
+
+    width: 100%;
+    max-width: 70px;
+
+    height: 100%;
+    max-height: 70px;
+
+    // display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // Text:
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+
+    line-height: 44px;
+    text-align: center;
+
+    @import "~@/components/button/styles/styles-btn.scss";
+}
+
+@media only screen and (max-width: 550px) {
+    .btn-rounded {
+        max-width: 24px;
+        max-height: 24px;
+    }
 }
 
 </style>

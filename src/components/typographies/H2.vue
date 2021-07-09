@@ -1,5 +1,5 @@
 <template>
-    <h2>{{ text }}</h2>
+    <h2 @click="$emit('onClick')">{{ text }}</h2>
 </template>
 
 <script>

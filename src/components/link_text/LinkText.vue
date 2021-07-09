@@ -1,5 +1,5 @@
 <template>
-    <a class="link" :style="{ 'fontSize': `${size}px` }"
+    <a :style="{ 'fontSize': `${size}px`, 'fontWeight': weight ? weight : '' }"
         :href="href">{{ title }}</a>
 </template>
 
@@ -22,7 +22,10 @@ export default {
         size: {
             type: Number,
             required: false,
-            default: 12
+        },
+        weight: {
+            type: Number,
+            required: false,
         },
     },
 }
@@ -36,12 +39,18 @@ export default {
   src: url(../../assets/fonts/Montserrat-Regular.ttf);
 }
 
-.link {
+a {
     color: #757575;
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: normal;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 15px;
+}
+
+@media only screen and (max-width: 550px) {
+    a {
+        font-size: 12px;
+    }
 }
 </style>
