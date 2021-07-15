@@ -15,8 +15,7 @@
 
     <router-view class="content" />
 
-    <Footer class="footer"
-      :withLink="true"
+    <Footer :withLink="true"
       titleLink="Termos de Uso"
       hrefLink="https://www.google.com/"
       

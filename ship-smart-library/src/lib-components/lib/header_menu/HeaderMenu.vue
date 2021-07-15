@@ -84,8 +84,6 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
-
 export default {
     name: 'HeaderMenu',
 
@@ -101,9 +99,13 @@ export default {
         },
     },
 
-    computed: {
-        ...mapState(["activeHamburguerOptions"]),
+    data() {
+        return {
+            activeHamburguerOptions: false,
+        }
+    },
 
+    computed: {
         headerButtonMenu() {
             return document.querySelector('.header-button-menu');
         },
@@ -113,19 +115,18 @@ export default {
     },
 
     methods: {
-        ...mapMutations(["setActiveHamburguerOptions"]),
 
         redirect(linkRedirect) {
 
             this.$router.push({ path: linkRedirect.path }).catch(() => {});
             this.closeOptionsRedirect();
-            this.setActiveHamburguerOptions(false);
+            this.activeHamburguerOptions = false;
         },
 
 
         // MOBILE:
-        activeHamburguer($el) {
-            this.setActiveHamburguerOptions(! this.activeHamburguerOptions);
+        activeHamburguer() {
+            this.activeHamburguerOptions = ! this.activeHamburguerOptions;
 
             if (this.activeHamburguerOptions) {
                 this.openOptionsRedirect();

@@ -67,7 +67,7 @@
                     </div>
 
                     <Button class="btn-rounded-help"
-                        :rounded="true"
+                        :roundedBall="true"
                         text="?"
                         typeColor="secondary" />
                 </div>

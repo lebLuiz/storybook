@@ -78,7 +78,6 @@ export default {
     },
 
     sendValue($e) {
-      this.filterMethod($e.target.value);
       this.$emit("valueInput", $e.target.value);
     },
   },
@@ -86,7 +85,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 $maxWidthMobile: 425px;
 
@@ -124,7 +123,7 @@ $maxWidthMobile: 425px;
   border: none;
 
   // FONT:
-  font-family: "Montserrat";
+  font-family: 'Montserrat';
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
