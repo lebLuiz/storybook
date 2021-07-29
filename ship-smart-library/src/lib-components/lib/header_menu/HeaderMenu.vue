@@ -69,12 +69,18 @@
 
                 <nav>
                     <ul>
-                        <li v-for="(linkRedirect) in linksRedirected" :key="linkRedirect.path">
-                            <a :class="{ '--link-selected': $route.path == linkRedirect.path }"
+                        <!-- IF YOU INSERT A LIST OF LINKS. WILL TREAT AS THE ROUTE OF THE 'window' (own browser): -->
+                        <li v-for="(linkRedirect) in linksRedirected" :key="linkRedirect.srcOrpath">
+                            <a :class="{ '--link-selected': pathOrAncora(linkRedirect) }"
                                 @click="redirect(linkRedirect)">
                                 {{ linkRedirect.label }}
                             </a>
                         </li>
+
+                        <!-- IF YOU WANT TO DEAL WITH ELEMENTS AND A SPECIFIC ROUTE TREATMENT (ex: VueRouter) -->
+                        <slot v-if="!linksRedirected" name="paths" >
+
+                        </slot>
                     </ul>
                 </nav>
             </div>
@@ -93,9 +99,16 @@ export default {
             required: false,
         },
 
+        // { label: [LABEL], srcOrpath: [ancora or path] }
         linksRedirected: {
             type: Array,
             required: false,
+        },
+        
+        openOptionsRedirect: {
+            type: Boolean,
+            required: false,
+            default: false,
         },
     },
 
@@ -103,6 +116,10 @@ export default {
         return {
             activeHamburguerOptions: false,
         }
+    },
+
+    updated() {
+        this.watchOptionsRedirect();
     },
 
     computed: {
@@ -116,11 +133,52 @@ export default {
 
     methods: {
 
-        redirect(linkRedirect) {
+        // watchOptionsRedirect() {
+        //     if (this.openOptionsRedirect == true) {
+        //         this.openOptionsRedirectMethod();
+        //     } else {
+        //         this.closeOptionsRedirectMethod();
+        //     }
+        // },
+        watchOptionsRedirect() {
+            if (this.openOptionsRedirect == true) {
+                this.openOptionsRedirectMethod();
+                this.activeHamburguerOptions = true;
+                this.$emit('resOpenOptionsRedirectHamburguer', true);
+            } else {
+                this.closeOptionsRedirectMethod();
+                this.activeHamburguerOptions = false;
+                this.$emit('resOpenOptionsRedirectHamburguer', false);
+            }
+        },
 
-            this.$router.push({ path: linkRedirect.path }).catch(() => {});
-            this.closeOptionsRedirect();
+        pathOrAncora(linkRedirect) {
+            // Is path:
+            if (linkRedirect.srcOrpath[0] === '/') {
+                if (window.location.pathname == linkRedirect.srcOrpath) return true
+                else return false
+            } 
+            // Is URL Ancora:
+            else {
+                if (window.location.href == linkRedirect.srcOrpath) return true
+                else return false
+            }
+        },
+
+        redirect(linkRedirect) {
+            // Is path:
+            if (linkRedirect.srcOrpath[0] === '/') {
+                window.location.pathname = linkRedirect.srcOrpath;
+            } 
+            // Is URL Ancora:
+            else {
+                window.location.href = linkRedirect.srcOrpath;
+            }
+
+            this.closeOptionsRedirectMethod();
             this.activeHamburguerOptions = false;
+
+            this.$emit('resOpenOptionsRedirectHamburguer', this.activeHamburguerOptions);
         },
 
 
@@ -129,17 +187,19 @@ export default {
             this.activeHamburguerOptions = ! this.activeHamburguerOptions;
 
             if (this.activeHamburguerOptions) {
-                this.openOptionsRedirect();
+                this.openOptionsRedirectMethod();
             } else {
-                this.closeOptionsRedirect();
+                this.closeOptionsRedirectMethod();
             }
+
+            this.$emit('resOpenOptionsRedirectHamburguer', this.activeHamburguerOptions);
         },
 
-        openOptionsRedirect() {
+        openOptionsRedirectMethod() {
             this.headerButtonMenu.classList.add("is-open-active");
             this.nav.classList.add("is-active");
         },
-        closeOptionsRedirect() {
+        closeOptionsRedirectMethod() {
             this.headerButtonMenu.classList.remove("is-open-active");
             this.nav.classList.remove("is-active");
         },

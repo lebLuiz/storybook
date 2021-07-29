@@ -69,12 +69,18 @@
 
                 <nav>
                     <ul>
-                        <li v-for="(linkRedirect) in linksRedirected" :key="linkRedirect.path">
-                            <a :class="{ '--link-selected': $route.path == linkRedirect.path }"
+                        <!-- CASO INSIRA UMA LISTA DE LINKS. IRÁ TRATAR COMO ROTA DO 'window' (próprio browser) -->
+                        <li v-for="(linkRedirect) in linksRedirected" :key="linkRedirect.srcOrpath">
+                            <a :class="{ '--link-selected': $route.path == linkRedirect.srcOrpath }"
                                 @click="redirect(linkRedirect)">
                                 {{ linkRedirect.label }}
                             </a>
                         </li>
+
+                        <!-- CASO QUEIRA TRATAR COM ELEMENTOS E UM TRATAMENTO DE ROTA ESPECIFICA(ex: VueRouter)-->
+                        <slot v-if="!linksRedirected" name="paths" >
+
+                        </slot>
                     </ul>
                 </nav>
             </div>
@@ -95,10 +101,21 @@ export default {
             required: false,
         },
 
+        // { label: [LABEL], srcOrpath: [ancora or path] }
         linksRedirected: {
             type: Array,
             required: false,
         },
+
+        openOptionsRedirect: {
+            type: Boolean,
+            required: false,
+            default: false,
+        }
+    },
+
+    updated() {
+        this.watchOptionsRedirect();
     },
 
     computed: {
@@ -115,30 +132,56 @@ export default {
     methods: {
         ...mapMutations(["setActiveHamburguerOptions"]),
 
-        redirect(linkRedirect) {
+        watchOptionsRedirect() {
+            if (this.openOptionsRedirect == true) {
+                console.log('abriu');
+                this.openOptionsRedirectMethod();
+                this.setActiveHamburguerOptions(true);
+                this.$emit('resOpenOptionsRedirectHamburguer', true);
+            } else {
+                console.log('fechado');
+                this.closeOptionsRedirectMethod();
+                this.setActiveHamburguerOptions(false);
+                this.$emit('resOpenOptionsRedirectHamburguer', false);
+            }
+        },
 
-            this.$router.push({ path: linkRedirect.path }).catch(() => {});
-            this.closeOptionsRedirect();
+        redirect(linkRedirect) {
+            console.log('LINKRedirected: \n', )
+
+            // Is path:
+            if (linkRedirect.srcOrpath[0] === '/') {
+                this.$router.push({ path: linkRedirect.srcOrpath }).catch(() => {});
+            } 
+            // Is URL Ancora:
+            else {
+                window.location.href = linkRedirect.srcOrpath;
+            }
+
+            this.closeOptionsRedirectMethod();
             this.setActiveHamburguerOptions(false);
+            this.$emit('resOpenOptionsRedirectHamburguer', this.activeHamburguerOptions);
         },
 
 
         // MOBILE:
-        activeHamburguer($el) {
+        activeHamburguer() {
             this.setActiveHamburguerOptions(! this.activeHamburguerOptions);
 
             if (this.activeHamburguerOptions) {
-                this.openOptionsRedirect();
+                this.openOptionsRedirectMethod();
             } else {
-                this.closeOptionsRedirect();
+                this.closeOptionsRedirectMethod();
             }
+
+            this.$emit('resOpenOptionsRedirectHamburguer', this.activeHamburguerOptions);
         },
 
-        openOptionsRedirect() {
+        openOptionsRedirectMethod() {
             this.headerButtonMenu.classList.add("is-open-active");
             this.nav.classList.add("is-active");
         },
-        closeOptionsRedirect() {
+        closeOptionsRedirectMethod() {
             this.headerButtonMenu.classList.remove("is-open-active");
             this.nav.classList.remove("is-active");
         },

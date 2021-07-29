@@ -70,6 +70,7 @@ $colorWhite: #FFFFFF;
 
 footer {
     box-shadow: -1px -1px 1px 0px #f2f2f2;
+    background: $colorWhite;
     position: relative;
     
     .footer-content {

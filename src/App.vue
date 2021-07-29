@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{ '--no-overflow': this.$store.state.activeHamburguerOptions }">
     <!-- <shipButton
       label="my button"
       typeButton="submite"
@@ -10,8 +10,14 @@
       :icon="true"
     >
     </shipButton> -->
-    <HeaderMenu 
-      :linksRedirected="linksRedirected"/>
+    <HeaderMenu :openOptionsRedirect="openOptionsRedirect" @resOpenOptionsRedirectHamburguer="getValueOptionsRedirect">
+      <li slot="paths" v-for="(linkRedirect) in linksRedirected" :key="linkRedirect.srcOrpath">
+        <a :class="{ '--link-selected': $route.path == linkRedirect.srcOrpath }"
+          @click="redirectTeste(linkRedirect)">
+          {{ linkRedirect.label }}
+        </a>
+      </li>
+    </HeaderMenu>
 
     <router-view class="content" />
 
@@ -39,22 +45,27 @@ export default {
 
   data() {
     return {
+      openOptionsRedirect: false,
       linksRedirected: [
         {
+          label: 'Home',
+          srcOrpath: '/home',
+        },
+        {
           label: 'Início',
-          path: '/inicio',
+          srcOrpath: '/inicio',
         },
         {
           label: 'Dúvidas',
-          path: '/duvidas',
+          srcOrpath: '/duvidas',
         },
         {
           label: 'Entrar',
-          path: '/entrar',
+          srcOrpath: '/entrar',
         },
         {
           label: 'Contato',
-          path: '/contato',
+          srcOrpath: 'https://www.google.com/',
         },
       ],
 
@@ -65,6 +76,24 @@ export default {
       ],
     }
   },
+
+  methods: {
+    getValueOptionsRedirect(value) {
+      this.openOptionsRedirect = value;
+    },
+    redirectTeste(linkRedirect) {
+      // Is path:
+      if (linkRedirect.srcOrpath[0] === '/') {
+        this.$router.push({ path: linkRedirect.srcOrpath }).catch(() => {});
+      } 
+      // Is URL Ancora:
+      else {
+        window.location.href = linkRedirect.srcOrpath;
+      }
+
+      this.openOptionsRedirect = false;
+    },
+  },
 }
 </script>
 
@@ -74,6 +103,10 @@ export default {
   max-height: 100%;
   // position: relative;
   // min-height: 580px;
+
+  &.--no-overflow {
+    overflow: hidden;
+  }
 
   .content {
     height: 100%;

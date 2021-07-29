@@ -1,16 +1,19 @@
 <template>
-  <div class="input-field">
+  <div class="input-field" :class="{ '--max-width-normal': inputMaxWidthNormal }">
     <input
       class="input"
       :type="type"
+      :placeholder="placeholder ? placeholder : ''"
       :class="{ '--disabled': disabled, '--password-type': typeField === 'password' }"
+      :value="value"
       @input="sendValue"
       :disabled="disabled"
+      :maxlength="checkMaximumSize"
     />
 
     <svg
       v-if="typeField === 'password'"
-      class="icon-field-password"
+      class="icon-field"
       :class="{ '--disabled': disabled }"
       @click.prevent="changeType"
 	  
@@ -29,6 +32,22 @@
         fill="black"
       />
     </svg>
+
+    <svg 
+      v-if="typeField === 'text' && filterCep === true && verification === true"
+      class="icon-field"
+      :class="{ '--search': filterCep, '--disabled': disabled }"
+      @click.prevent="searchMethod"
+
+      xmlns="http://www.w3.org/2000/svg"
+      height="18px"
+      viewBox="0 0 24 24"
+      width="18px"
+      fill="#000000">
+      <path d="M0 0h24v24H0V0z" fill="none"/>
+      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+    </svg>
+
   </div>
 </template>
 
@@ -57,8 +76,9 @@ export default {
       type: String,
       default: "text",
     },
-    filterMethod: {
-      type: Function,
+
+    value: {
+      type: String || Number || Boolean || Array || Object || Function,
       required: false,
     },
 
@@ -66,6 +86,54 @@ export default {
       type: Boolean,
       default: false,
     },
+
+    placeholder: {
+      type: String,
+      required: false,
+    },
+
+    // maxLengthInput:
+    maxLength6: { type: Boolean },
+    maxLength15: { type: Boolean },
+    maxLength20: { type: Boolean },
+    maxLength60: { type: Boolean },
+    maxLength85: { type: Boolean },
+
+    filterNumberAddress: { type: Boolean },
+    filterCpf: { type: Boolean },
+    filterCnpj: { type: Boolean },
+    filterRg: { type: Boolean },
+    filterPhone: { type: Boolean },
+    filterCep: { type: Boolean },
+    filterUf: { type: Boolean },
+
+    inputMaxWidthNormal: { type: Boolean },
+
+    verification: { type: Boolean },
+  },
+
+  computed: {
+    checkMaximumSize() {
+      if (this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
+        return 6;
+      } else if (this.maxLength15 && !this.maxLength6 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
+        return 15;
+      } else if (this.maxLength20 && !this.maxLength6 && !this.maxLength15 && !this.maxLength60 && !this.maxLength85 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
+        return 20;
+      } else if (this.maxLength60 && !this.maxLength85 && !this.maxLength20 && !this.maxLength15 && !this.maxLength6 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
+        return 60;
+      } else if (this.maxLength85 && !this.maxLength60 && !this.maxLength20 && !this.maxLength15 && !this.maxLength6 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
+        return 85;
+      } else if (this.filterPhone && !this.filterCep && !this.filterCpf && !this.filterUf && !this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85) {
+        return 25;
+      } else if (this.filterCep && !this.filterPhone && !this.filterPhone && !this.filterUf && !this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85) {
+        return 13;
+      } else if (this.filterUf && !this.filterCep && !this.filterPhone && !this.filterPhone && !this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85) {
+        return 2;
+      } else{
+        return Infinity;
+      }
+    }
   },
 
   methods: {
@@ -76,9 +144,89 @@ export default {
         this.type = "password";
       }
     },
+    searchMethod() {
+      this.$emit('searchIconFilterClick');
+    },
 
     sendValue($e) {
-      this.filterMethod($e.target.value);
+      if (this.filterCpf === true && !this.filterPhone && !this.filterCep && !this.filterUf) {
+
+        const vetMask = '###.###.###-##'.split("");
+        const numCpf = $e.target.value.replace(/\D/g, "");
+        const cursor = $e.target.selectionStart;
+        const tecla = (window.event) ? event.keyCode : event.which;
+
+        for (let i=0; i<numCpf.length; i++) {
+          vetMask.splice(vetMask.indexOf("#"), 1, numCpf[i]);
+        }
+
+        $e.target.value = vetMask.join("");
+
+        if (tecla != 37 && cursor == 3 || cursor == 7 || cursor == 11) {
+          $e.target.setSelectionRange(cursor+1, cursor+1);
+        } else {
+          $e.target.setSelectionRange(cursor, cursor);
+        }
+
+      } else if (this.filterCnpj === true && !this.filterCpf && !this.filterPhone && !this.filterCep && !this.filterUf) {
+        const vetMask = '##.###.###/####-##'.split("");
+        const numCpf = $e.target.value.replace(/\D/g, "");
+        const cursor = $e.target.selectionStart;
+        const tecla = (window.event) ? event.keyCode : event.which;
+        
+        for (let i=0; i<numCpf.length; i++) {
+          vetMask.splice(vetMask.indexOf("#"), 1, numCpf[i]);
+        }
+
+        $e.target.value = vetMask.join("");
+
+        if (tecla != 37 && cursor == 3 || cursor == 7 || cursor == 11) {
+          $e.target.setSelectionRange(cursor+1, cursor+1);
+        } else {
+          $e.target.setSelectionRange(cursor, cursor);
+        }
+      } else if (this.filterRg === true && !this.filterCpf && !this.filterPhone && !this.filterCep && !this.filterUf) {
+        const vetMask = '##.###.###-#'.split("");
+        const numCpf = $e.target.value.replace(/\D/g, "");
+        const cursor = $e.target.selectionStart;
+        const tecla = (window.event) ? event.keyCode : event.which;
+
+        for (let i=0; i<numCpf.length; i++) {
+          vetMask.splice(vetMask.indexOf("#"), 1, numCpf[i]);
+        }
+
+        $e.target.value = vetMask.join("");
+
+        if (tecla != 37 && cursor == 3 || cursor == 7 || cursor == 11) {
+          $e.target.setSelectionRange(cursor+1, cursor+1);
+        } else {
+          $e.target.setSelectionRange(cursor, cursor);
+        }
+      } else if (this.filterPhone === true && !this.filterCpf && !this.filterCep && !this.filterUf) {
+        $e.target.value=$e.target.value.replace(/\D/g,"")
+        $e.target.value=$e.target.value.replace(/^(\d)/,"+$1")
+        $e.target.value=$e.target.value.replace(/(.{3})(\d)/,"$1($2")
+        $e.target.value=$e.target.value.replace(/(.{6})(\d)/,"$1)$2")
+        if($e.target.value.length == 12) {
+          $e.target.value=$e.target.value.replace(/(.{1})$/,"-$1")
+        } else if ($e.target.value.length == 13) {
+          $e.target.value=$e.target.value.replace(/(.{2})$/,"-$1")
+        } else if ($e.target.value.length == 14) {
+          $e.target.value=$e.target.value.replace(/(.{3})$/,"-$1")
+        } else if ($e.target.value.length == 15) {
+          $e.target.value=$e.target.value.replace(/(.{4})$/,"-$1")
+        } else if ($e.target.value.length > 15) {
+          $e.target.value=$e.target.value.replace(/(.{4})$/,"-$1")
+        }
+      } else if (this.filterCep === true && !this.filterCpf && !this.filterPhone && !this.filterUf) {
+        $e.target.value=$e.target.value.replace(/\D/g,"")
+        $e.target.value=$e.target.value.replace(/(.{5})(\d)/,"$1-$2")
+      } else if (this.filterUf === true && !this.filterCpf && !this.filterPhone && !this.filterCep) {
+        $e.target.value = $e.target.value.toUpperCase()
+      } else if (this.filterNumberAddress === true) {
+        $e.target.value=$e.target.value.replace(/\D/g,"")
+      }
+
       this.$emit("valueInput", $e.target.value);
     },
   },
@@ -95,13 +243,27 @@ $maxWidthMobile: 425px;
   width: 100%;
   max-width: $maxWidthMobile;
   position: relative;
+  
+  &.--max-width-normal {
+    max-width: none;
+  }
 
-  .icon-field-password {
+  .icon-field {
     position: absolute;
 
     top: 50%;
     right: 30px;
     transform: translateY(-50%);
+
+    &.--search {
+      cursor: pointer;
+
+      &:hover {
+        transition: 1s;
+        border-radius: 8px;
+        background: rgb(184 184 184 / 38%);
+      }
+    }
 
     &.--disabled {
       display: none;
@@ -142,15 +304,9 @@ $maxWidthMobile: 425px;
 
   &.--disabled {
     cursor: not-allowed;
-    color: white;
-    background-color: rgba(184, 184, 184, 0.377);
+    color: black;
+    background-color: rgba(139, 139, 139, 0.089);
     border: 0.1px solid rgba(56, 56, 56, 0.11);
-
-    &:hover {
-      transform: scale(1.005);
-      background-color: rgba(139, 139, 139, 0.089);
-      transition: 0.2s;
-    }
   }
 }
 </style>

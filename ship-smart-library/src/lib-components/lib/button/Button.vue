@@ -1,5 +1,5 @@
 <template>
-    <button :class="[{ '--rounded-ball': roundedBall }, handleTypesBtn]"
+    <button :class="[{ '--rounded-ball': roundedBall }, handleTypesBtn]" :title="title"
         :disabled="disabled || loading" @click="$emit('onClick')">
         {{ loading ? 'Loading...' : text }}
     </button>
@@ -26,6 +26,10 @@ export default {
         loading: {
             type: Boolean,
             default: false,
+        },
+        title: {
+            type: String,
+            required: false,
         },
 
         //Button roundedBall:
@@ -85,10 +89,8 @@ button {
 
     &.--rounded-ball {
         border-radius: 50%;
-        height: 100%;
-        max-width: 70px;
-        max-height: 70px;
-        min-height: 20px;
+        height: 70px;
+        width: 70px;
 
         font-weight: 400;
         line-height: 44px;
@@ -129,8 +131,10 @@ button {
 @media only screen and (max-width: 550px) {
     button {
         &.--rounded-ball {
-            max-width: 24px;
-            max-height: 24px;
+            width: 24px;
+            height: 24px;
+            min-height: 0px;
+            line-height: normal;
         }
     }
 }

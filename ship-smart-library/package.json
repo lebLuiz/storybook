@@ -1,6 +1,6 @@
 {
   "name": "ship-smart-library",
-  "version": "2.0.3",
+  "version": "2.0.34",
   "description": "",
   "main": "dist/ship-smart-library.ssr.js",
   "browser": "dist/ship-smart-library.esm.js",
@@ -18,7 +18,10 @@
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
   },
-  "dependencies": {},
+  "dependencies": {
+    "vue-router": "^3.5.2",
+    "vuex": "^3.6.2"
+  },
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",

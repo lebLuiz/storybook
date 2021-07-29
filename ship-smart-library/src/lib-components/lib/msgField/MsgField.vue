@@ -8,26 +8,33 @@ export default {
   name: 'MsgField',
   
   props: {
-    valuesProps: {
-      type: Object,
+    //the two need to be together:
+    error: {
+      type: Boolean,
+      default: false,
+    },
+    errorMessage: {
+      type: String,
       required: false,
     },
+
+    message: {
+      type: String,
+      required: false,
+    }
   },
 
   computed: {
     msgFieldComputed() {
-
-      if (this.valuesProps.error && (this.valuesProps.errorMessage != null || this.valuesProps.errorMessage != '')) {
-        return this.valuesProps.errorMessage;
+      if ((this.message != null || this.message != '') && (this.errorMessage == '' || this.errorMessage == null)) {
+        return this.message;
+      } else if (this.error && (this.errorMessage != '' || this.errorMessage != null)) {
+        return this.errorMessage;
       }
-      else if (this.valuesProps.messageNotification != null) {
-        return this.valuesProps.messageNotification;
-      }
-
     },
 
     containsError() {
-      return (this.valuesProps.error && (this.msgFieldComputed === this.valuesProps.errorMessage)) ? true : false;
+      return (this.error && (this.msgFieldComputed === this.errorMessage)) ? true : false;
     },
 
   },

@@ -20,7 +20,6 @@
                         :inputDisabled="false"
                         
                         messageNotification="Digite no mínimo seis caracteres, com pelo menos um número ou caractere especial.*"
-
                         :errorMessage="errorMessage"
                         :error="actionErrorMsg"
                         
@@ -31,11 +30,10 @@
                         type="password"
                         
                         messageNotification="Digite no mínimo seis caracteres, com pelo menos um número ou caractere especial.*"
-
                         errorMessage=""
                         :error="false" />
 
-                    <LinkText title="Esqueceu sua senha?" :size="14" href="https://www.google.com/" target="_blank" />
+                    <LinkText title="Esqueceu sua senha?" :size="14" href="http://localhost:8080/forgot_password" />
 
                     <!-- <TextFormField
                         label="Age"
@@ -52,14 +50,14 @@
                     <!-- BUTTON: -->
                     <div style="display: flex; flex-direction: column;">
                         <Button style="margin-bottom: 16px; margin-top: 37px;"
-                            @onClick="soma(5, 65)"
+                            @onClick="login"
                             text="Entrar"
                             typeColor="secondary"
                             :loading="false"
                             :disabled="false" />
 
                         <Button
-                            @onClick="soma(5, 65)"
+                            @onClick="register"
                             text="Cadastrar"
                             typeColor="primary"
                             :loading="false"
@@ -137,6 +135,9 @@ export default {
 
     methods: {
         // Funções de exemplo:
+        login() {
+            this.$router.push({ name: 'home' });
+        },
         soma(v1, v2) {
             console.log(v1 + v2);
         },
@@ -154,6 +155,11 @@ export default {
                 this.actionErrorMsg = false;
                 return console.log('email is valid')
             }
+        },
+
+        //Redirect 'Cadastro'
+        register() {
+            this.$router.push({ path: 'register' }).catch(() => {});
         },
 
         handleNumber(value) {
