@@ -2,7 +2,7 @@
     <footer>
         <div class="container">
             <div class="footer-content">
-                <a v-if="withLink" :style="{ 'fontSize': `${size}px`, 'fontWeight': weight ? weight : '' }"
+                <a v-if="withLink"
                     :href="hrefLink" target="_blank" class="link-footer">{{ titleLink }}</a>
 
                 <div class="imgs" v-if="images != null && images.length > 0">

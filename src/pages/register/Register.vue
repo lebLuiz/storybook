@@ -28,11 +28,13 @@
                             :filterMethod="handleSurnameUser" /> -->
 
                         <TextFormField
-                            fieldMaxWidthNormal filterPhone
+                            fieldMaxWidthNormal
                             type="tel"
+                            :mask="['(##) ####-####', '(##) #####-####']"
                             label="Telefone*"
                             :value="guardMyValuesRegister.tel"
                             :filterMethod="handleTel"
+                            @onInput="handleTel"
                             :errorMessage="msgsError.tel.errorMessageTel"
                             :error="msgsError.tel.actionErrorMsgTel" />
 
@@ -53,7 +55,7 @@
                             :value="guardMyValuesRegister.password"
                             :errorMessage="msgsError.password.password.errorMessagePassword"
                             :error="msgsError.password.password.actionErrorMsgPassword"
-                            :filterMethod="handlePassword" />
+                            @onInput="handlePassword" />
 
                         <TextFormField
                             fieldMaxWidthNormal
@@ -65,13 +67,14 @@
                             :filterMethod="handleConfirmPassword" />
 
                         <TextFormField
-                            fieldMaxWidthNormal filterCep
-                            type="text" :verificationInputIcon="!msgsError.cep.actionErrorMsgCep && msgsError.cep.errorMessageCep == ''"
+                            fieldMaxWidthNormal 
+                            type="text" :withCheckSearch="!msgsError.cep.actionErrorMsgCep && msgsError.cep.errorMessageCep == ''"
                             label="CEP*"
+                            :mask="['#####-###', '#####-############']"
                             :value="guardMyValuesRegister.cep"
                             :errorMessage="msgsError.cep.errorMessageCep"
                             :error="msgsError.cep.actionErrorMsgCep"
-                            :filterMethod="handleCep"
+                            @onInput="handleCep"
                             @searchIconFilterClick="handleClickIconSearchCEP" />
 
                         <transition name="fade" type="animation" appear>
@@ -605,15 +608,16 @@ export default {
         //     this.guardMyValuesRegister.surname = value;
         // },
         handleTel(value) {
-            if ((value != null || value != '') && value.length >= 16) {
-                this.msgsError.tel.actionErrorMsgTel = false;
-                this.msgsError.tel.errorMessageTel = '';
-            } else {
-                this.msgsError.tel.actionErrorMsgTel = true;
-                this.msgsError.tel.errorMessageTel = 'Insira um número de telefone válido';
-            }
+            console.log('ta vindo: ', value)
+            // if ((value != null || value != '') && value.length >= 16) {
+            //     this.msgsError.tel.actionErrorMsgTel = false;
+            //     this.msgsError.tel.errorMessageTel = '';
+            // } else {
+            //     this.msgsError.tel.actionErrorMsgTel = true;
+            //     this.msgsError.tel.errorMessageTel = 'Insira um número de telefone válido';
+            // }
 
-            this.guardMyValuesRegister.tel = value;
+            // this.guardMyValuesRegister.tel = value;
         },
         handleEmail(value) {
             let regexValidation = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;

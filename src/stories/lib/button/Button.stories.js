@@ -1,41 +1,63 @@
-import MyButton from "./Button.vue";
+import Button from "../../../components/button/Button.vue";
 
 export default {
-  title: "Button",
-  component: MyButton,
-  argTypes: {
-    backgroundColor: { control: "color" },
-    size: {
-      control: { type: "select", options: ["small", "medium", "large"] },
+    title: "Button",
+    component: Button,
+    argTypes: {
+        text: {
+            control: {
+                type: "text",
+            }
+        },
+
+        disabled: {
+            control: {
+                type: "boolean",
+            }
+        },
+
+        loading: {
+            control: {
+                type: "boolean",
+            }
+        },
+        
+        roundedBall: {
+            control: {
+                type: "boolean",
+            }
+        },
+        
+        title: {
+            control: {
+                type: "text",
+            }
+        },
+
+        typeColor: {
+            control: {
+                type: "select",
+                options: ["primary", "secondary"],
+            },
+        },
+
     },
-  },
 };
 
 const Template = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
-  components: { MyButton },
-  template: '<my-button @onClick="onClick" v-bind="$props" />',
+  components: { Button },
+  template: '<Button @onClick="onClick" v-bind="$props" />',
 });
 
 export const Primary = Template.bind({});
 Primary.args = {
-  primary: true,
-  label: "Button",
+    typeColor: "primary",
+    text: "Button",
 };
 
 export const Secondary = Template.bind({});
 Secondary.args = {
-  label: "Button",
-};
-
-export const Large = Template.bind({});
-Large.args = {
-  size: "large",
-  label: "Button",
-};
-
-export const Small = Template.bind({});
-Small.args = {
-  size: "small",
-  label: "Button",
+    typeColor: "secondary",
+    text: "Button",
 };

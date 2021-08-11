@@ -1,5 +1,5 @@
 <template>
-    <div class="box-content">
+    <div class="box-content" :class="{ '--no-maximum-size': noMaximumSize }">
         <slot></slot>
     </div>
 </template>
@@ -8,18 +8,29 @@
 
 export default {
     name: 'BoxContent',
+
+    props: {
+        noMaximumSize: { type: Boolean },
+    },
 }
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .box-content {
-    width: 100%;
+    width: auto;
     max-width: 470px;
-    border-radius: 40px;
+    padding: 25px 50px;
+    margin: 20px 0px;
+
+    box-sizing: border-box;
     box-shadow: 0px 1px 24px rgba(35, 34, 39, 0.1);
-    padding: 40px 100px;
+    border-radius: 40px;
     background-color: #FFFFFF;
+
+    &.--no-maximum-size {
+        max-width: none;
+    }
 }
 
 @media only screen and (max-width: 550px) {

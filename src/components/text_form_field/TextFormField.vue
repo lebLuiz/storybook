@@ -7,26 +7,12 @@
       :disabled="inputDisabled"
       :placeholder="placeholder ? placeholder : ''"
       :typeField="type"
+      :mask="mask"
 
-      :maxLength6="maxLength6"
-      :maxLength15="maxLength15"
-      :maxLength20="maxLength20"
-      :maxLength60="maxLength60"
-      :maxLength85="maxLength85"
-
-      :filterNumberAddress="filterNumberAddress"
-      :filterCpf="filterCpf"
-      :filterCnpj="filterCnpj"
-      :filterRg="filterRg"
-      :filterPhone="filterPhone"
-      :filterCep="filterCep"
-      :filterUf="filterUf" 
-      
       :value="value"
       :inputMaxWidthNormal="fieldMaxWidthNormal"
-      :verification="verificationInputIcon"
-      @valueInput="getValue"
-      @searchIconFilterClick="getResClickIcon" />
+      @input="sendValueInput($event, true)"
+      @onSearchIcon="getResClickIcon" />
 
     <Select v-if="type === 'select'"
       :selectMaxWidthNormal="fieldMaxWidthNormal"
@@ -75,57 +61,9 @@ export default {
     },
 
     // maxLegnthInput:
-    maxLength6: {
-      type: Boolean,
-      default: false,
-    },
-    maxLength15: {
-      type: Boolean,
-      default: false,
-    },
-    maxLength20: {
-      type: Boolean,
-      default: false,
-    },
-    maxLength60: {
-      type: Boolean,
-      default: false,
-    },
-    maxLength85: {
-      type: Boolean,
-      default: false,
-    },
-    filterNumberAddress: {
-      type: Boolean,
-      default: false,
-    },
-    filterCpf: {
-      type: Boolean,
-      default: false,
-    },
-    filterCnpj: {
-      type: Boolean,
-      default: false,
-    },
-    filterRg: {
-      type: Boolean,
-      default: false,
-    },
-    filterPhone: {
-      type: Boolean,
-      default: false,
-    },
-    filterCep: {
-      type: Boolean,
-      default: false,
-    },
-    filterUf: {
-      type: Boolean,
-      default: false,
-    },
 
     value: {
-      type: String || Number || Boolean || Object || Array || Function,
+      type: String || Number,
       required: false,
     },
     
@@ -137,6 +75,11 @@ export default {
     // Disables:
     inputDisabled: {
       type: Boolean,
+      required: false,
+    },
+
+    mask: {
+      type: [String, Array],
       required: false,
     },
 
@@ -187,11 +130,6 @@ export default {
       type: Object,
       required: false,
     },
-
-    verificationInputIcon: {
-      type: Boolean,
-      default: false,
-    },
   },
 
 
@@ -205,6 +143,11 @@ export default {
 
     getSelectValueRadio(value) {
       this.$emit('onSelect', value);
+    },
+
+    sendValueInput($event, withAlgo) {
+      console.log($event)
+      this.$emit('onInput', $event);
     },
   },
 };

@@ -172,6 +172,7 @@ $colorWhite: #FFFFFF;
             display: flex;
             flex-direction: column;
             transition: width 0.3s ease;
+            z-index: 2;
 
             .dropdown-list__item {
                 transition: transform 0.3s ease;

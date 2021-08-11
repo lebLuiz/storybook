@@ -1,7 +1,7 @@
 <template>
     <button :class="[{ '--rounded-ball': roundedBall }, handleTypesBtn]" :title="title"
         :disabled="disabled || loading" @click="$emit('onClick')">
-        {{ loading ? 'Loading...' : text }}
+        {{ loading ? (!roundedBall ? isPT ? 'Carregando...' :'Loading...' : '...') : text }}
     </button>
 </template>
 
@@ -49,7 +49,11 @@ export default {
                 //Disabled:
                 '--disabled': this.disabled || this.loading,
             };
-        }
+        },
+
+        isPT() {
+            return (navigator.language == "pt-BR" || navigator.language == "pt") ? true : false;
+        },
     },
 }
 

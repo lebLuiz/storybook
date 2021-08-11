@@ -59,7 +59,7 @@ export default {
 <style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-$--line-border-fill: #FBBE2F;;
+$--line-border-fill: #000000;
 $--line-border-empty: #e0e0e0;
 
 .container-progress-bar-steps {

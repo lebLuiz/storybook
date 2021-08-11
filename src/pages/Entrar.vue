@@ -1,60 +1,59 @@
 <template>
-    <div class="background">
+    <div>
         
-        <div class="container">
-            <!-- HEADER: -->
-            <!-- <HeaderMenu :linksRedirected="linksRedirected"/> -->
-            <BoxContent class="box-content">
-                <div>
-                    <H1
-                        text="Entrar"/>
-                    <H2
-                        text="Já sou cliente"/>
+        <HeaderMenu :openOptionsRedirect="openOptionsRedirect" @resOpenOptionsRedirectHamburguer="getValueOptionsRedirect">
+            <li slot="paths" v-for="(linkRedirect) in linksRedirected" :key="linkRedirect.srcOrpath">
+                <a :class="{ '--link-selected': $route.path == linkRedirect.srcOrpath }"
+                @click="redirectFunction(linkRedirect)">
+                {{ linkRedirect.label }}
+                </a>
+            </li>
+        </HeaderMenu>
 
-
-                    <!-- TEXT_FORM_FIELD'S: -->
-                    <TextFormField
-                        label="E-mail"
-                        type="email" 
-
-                        :inputDisabled="false"
+        <div class="bg-img">
+        
+            <div class="container">
+                
+                <div class="content">
+                    <BoxContent>
                         
-                        messageNotification="Digite no mínimo seis caracteres, com pelo menos um número ou caractere especial.*"
-                        :errorMessage="errorMessage"
-                        :error="actionErrorMsg"
-                        
-                        :filterMethod="handleEmail" />
+                        <H1 class="title-login"
+                            text="Entrar"/>
 
-                    <TextFormField
-                        label="Senha"
-                        type="password"
-                        
-                        messageNotification="Digite no mínimo seis caracteres, com pelo menos um número ou caractere especial.*"
-                        errorMessage=""
-                        :error="false" />
+                        <TextFormField
+                            label="E-mail"
+                            type="email"
+                            :errorMessage="errorMessage"
+                            :error="actionErrorMsg"
+                            :value="email"
+                            @onInput="handleEmail" />
 
-                    <LinkText title="Esqueceu sua senha?" :size="14" href="http://localhost:8080/forgot_password" />
+                        <TextFormField
+                            label="Password"
+                            type="password"
+                            messageNotification="Digite no mínimo seis caracteres(distinção entre maiúsculo e minúsculo) com pelo menos um número ou caractere especial."
+                            :value="password"
+                            :errorMessage="errorMessagePassword"
+                            :error="actionErrorMsgPassword"
+                            @onInput="handlePassword" />
 
-                    <!-- <TextFormField
-                        label="Age"
-                        type="number"
-                        
-                        messageNotification="*Precisa ser +18"
+                        <LinkText>
+                            <a slot="link-redirect"
+                                @click="redirectLinkForgotPassword" >
+                                Esqueceu sua senha?
+                            </a>
+                        </LinkText>
 
-                        errorMessage=""
-                        :error="false"
+                        <InputField mask="##-###-##" v-model="teste" typeField="text" />
 
-                        :filterMethod="handleNumber" /> -->
-
-
-                    <!-- BUTTON: -->
-                    <div style="display: flex; flex-direction: column;">
-                        <Button style="margin-bottom: 16px; margin-top: 37px;"
-                            @onClick="login"
-                            text="Entrar"
-                            typeColor="secondary"
-                            :loading="false"
-                            :disabled="false" />
+                        <div class="box-content-btn">
+                            <Button
+                                @onClick="login"
+                                text="Entrar"
+                                typeColor="secondary"
+                                :loading="false"
+                                :disabled="false" />
+                        </div>
 
                         <Button
                             @onClick="register"
@@ -62,31 +61,32 @@
                             typeColor="primary"
                             :loading="false"
                             :disabled="false" />
-                    </div>
 
-                    <Button class="btn-rounded-help"
-                        :roundedBall="true"
-                        text="?"
-                        typeColor="secondary" />
+                    </BoxContent>
                 </div>
-                
 
-            </BoxContent>
+            </div>
 
         </div>
+        
+        <Footer v-show="!activeHamburguerOptions" :withLink="true"
+            titleLink="Termos de uso"
+            hrefLink="https://www.google.com/" />
 
     </div>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
+
 import TextFormField from '@/components/text_form_field/TextFormField'
 import Button from '@/components/button/Button'
 import HeaderMenu from '@/components/header_menu/HeaderMenu'
 import H1 from '@/components/typographies/H1'
-import H2 from '@/components/typographies/H2'
 import Footer from '@/components/footer/Footer'
 import LinkText from '@/components/link_text/LinkText'
 import BoxContent from '@/components/box_content/BoxContent'
+import InputField from '@/components/text_form_field/partials/InputField'
 
 export default {
     name: 'Entrar',
@@ -94,78 +94,129 @@ export default {
         TextFormField,
         Button,
         HeaderMenu,
-        H1, H2,
+        H1,
         Footer,
         LinkText,
         BoxContent,
+        InputField,
     },
 
     data() {
-    return {
-      inputDisabled: false,
-      actionErrorMsg: false,
-      errorMessage: '',
+        return {
+            actionErrorMsg: false,
+            errorMessage: '',
 
-      images: [
-        'https://devkico.itexto.com.br/wp-content/uploads/2017/08/logotipo.png',
-        'https://www.comofazerumsite.com/imagens/HTML5.png',
-        'https://terminalroot.com.br/assets/img/css/css.png',
-      ],
+            actionErrorMsgPassword: false,
+            errorMessagePassword: '',
 
-    //   linksRedirected: [
-    //     {
-    //       label: 'Início',
-    //       path: 'inicioo',
-    //     },
-    //     {
-    //       label: 'Dúvidas',
-    //       path: 'duvidass',
-    //     },
-    //     {
-    //       label: 'Entrar',
-    //       path: 'entrarr',
-    //     },
-    //     {
-    //       label: 'Contato',
-    //       path: 'contatoo',
-    //     },
-    //   ],
-    }
-  },
+            openOptionsRedirect: false,
+
+            teste: '',
+
+            email: '',
+            password: '',
+            cnpj: '',
+
+            linksRedirected: [
+                {
+                    label: 'Inicio',
+                    srcOrpath: '/init',
+                },
+                {
+                    label: 'Dúvidas',
+                    srcOrpath: '/doubts',
+                },
+                {
+                    label: 'Login',
+                    srcOrpath: '/login',
+                },
+                {
+                    label: 'Contato',
+                    srcOrpath: '/contact',
+                },
+            ],
+        }
+    },
+
+    updated() {
+        console.log('Teste: ', this.teste)
+    },
+
+    watch: {
+        openOptionsRedirect(newV) {
+            if (newV === true) this.setActiveHamburguerOptions(true);
+            else this.setActiveHamburguerOptions(false);
+        },
+    },
+
+    computed: {
+        ...mapState(['activeHamburguerOptions']),
+    },
 
     methods: {
-        // Funções de exemplo:
-        login() {
-            this.$router.push({ name: 'home' });
+        ...mapMutations(['setActiveHamburguerOptions']),
+
+        getValueOptionsRedirect(value) {
+            this.openOptionsRedirect = value;
         },
-        soma(v1, v2) {
-            console.log(v1 + v2);
+
+        redirectFunction(linkRedirect) {
+            // Is path:
+            if (linkRedirect.srcOrpath[0] === '/') {
+                this.$router.push({ path: linkRedirect.srcOrpath }).catch(() => {});
+            } 
+            // Is URL Ancora:
+            else {
+                window.location.href = linkRedirect.srcOrpath;
+            }
+
+            this.openOptionsRedirect = false;
+            this.setActiveHamburguerOptions(false);
         },
+
+        redirectLinkForgotPassword() {
+            this.$router.push({ path: '/forgot_password' }).catch(() => {});
+        },
+        
         handleEmail(value) {
             let regexValidation = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;
 
+            console.log('value no entrar: ', value)
+
             if (value == '') {
-                return console.log('Email is null')
+                this.actionErrorMsg = true;
+                this.errorMessage = "Email is empty";
             } else if(!regexValidation.test(value)) {
                 this.actionErrorMsg = true;
                 this.errorMessage = "Please, enter a valid email";
-                return console.log('Please, enter a valid email')
             } else {
-                this.inputDisabled = true;
                 this.actionErrorMsg = false;
-                return console.log('email is valid')
+                this.errorMessage = "";
             }
         },
+        handlePassword(value) {
+            let regexValidation = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[?!%$*&@#])[0-9a-zA-Z?!%$*&@#]{6,}$/;
+            
+            if (!regexValidation.test(value)) {
+                this.actionErrorMsgPassword = true;
+                this.errorMessagePassword = 'Digite no mínimo seis caracteres(distinção entre maiúsculo e minúsculo) com pelo menos um número ou caractere especial.';
+            } else {
+                this.actionErrorMsgPassword = false;
+                this.errorMessagePassword = '';
+            }
+            
+            this.password = value;
+        },
+        handleCnpj(value) {
+            this.cnpj = value;
+        },
 
+        login() {
+            this.$router.push({ name: 'home' });
+        },
         //Redirect 'Cadastro'
         register() {
             this.$router.push({ path: 'register' }).catch(() => {});
-        },
-
-        handleNumber(value) {
-            if (value % 2 === 0) {
-                console.log('Is PAR!');
-            }
         },
     },
 
@@ -178,52 +229,35 @@ export default {
         width: 100%;
         max-width: 1280px;
         margin: 0 auto;
-        padding: 127px 20px 113px 20px;
         position: relative;
+        padding: 0px 15px;
     }
 
-    .background {
+    .bg-img {
         background-image: linear-gradient(0deg, rgba(1, 3, 8, 0.4) 0%, rgba(1, 3, 8, 0) 100%), url("../assets/login_bg_3.png");
         background-repeat: no-repeat;
         background-size: cover;
-        background-position-x: center;
+        background-position: center;
 
-        .box-content {
-            div:nth-child(1) {
-                padding-top: 47px;
+        display: flex;
+        align-items: center;
+        min-height: calc(100vh - 161px);
+
+        .content {
+            .box-content-btn {
+                margin-top: 37px;
+                margin-bottom: 16px;
             }
-        }
-        
-        .btn-rounded-help {
-            position: absolute;
-            bottom: 0px;
-            right: 20px;
-            transform: translateY(-50%);
-
-            font-size: 36px;
         }
     }
 
     @media only screen and (max-width: 550px) {
-        .background {
+        .bg-img {
             background: none;
 
-            .box-content {
-                div:nth-child(1) {
-                    padding-top: 0px;
-                }
-            }
-
-            .btn-rounded-help {
-                top: 35px;
-
-                font-size: 14px;
-                transform: translateY(0);
-                line-height: 17px;
-            }
-
-            .container {
-                padding: 32px 20px;
+            .content {
+                display: flex;
+                justify-content: center;
             }
         }
     }

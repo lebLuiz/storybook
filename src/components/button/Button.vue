@@ -1,7 +1,7 @@
 <template>
     <button :class="[{ '--rounded-ball': roundedBall }, handleTypesBtn]" :title="title"
         :disabled="disabled || loading" @click="$emit('onClick')">
-        {{ loading ? 'Loading...' : text }}
+        {{ loading ? (!roundedBall ? isPT ? 'Carregando...' :'Loading...' : '...') : text }}
     </button>
 </template>
 
@@ -49,7 +49,11 @@ export default {
                 //Disabled:
                 '--disabled': this.disabled || this.loading,
             };
-        }
+        },
+
+        isPT() {
+            return (navigator.language == "pt-BR" || navigator.language == "pt") ? true : false;
+        },
     },
 }
 
@@ -74,12 +78,12 @@ button {
     width: 100%;
     max-width: $maxWidthMobile;
     min-height: 44px;
-
+    
     justify-content: center;
     align-items: center;
 
     // Text:
-    font-family: "Montserrat";
+    font-family: 'Montserrat';
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
@@ -87,7 +91,44 @@ button {
     line-height: 17px;
     text-align: center;
 
-    @import "~@/components/button/styles/styles-btn.scss";
+    &.--rounded-ball {
+        border-radius: 50%;
+        height: 70px;
+        width: 70px;
+
+        font-weight: 400;
+        line-height: 44px;
+    }
+
+    &.--disabled {
+        cursor: not-allowed;
+        background: #FBBE2F;
+        color: $colorWhite;
+        border: 0.1px solid rgba(56, 56, 56, 0.11);
+    }
+
+    // Types_Styles:
+    &.--primary {
+        background: #FBBE2F;
+        color: $colorWhite;
+        &.--disabled {
+            cursor: not-allowed;
+            background: #fbbe2fa6;
+            color: #00000040;
+            border: 0.1px solid rgba(56, 56, 56, 0.11);
+        }
+    }
+
+    &.--secondary {
+        background: $colorWhite;
+        color: #000000;
+        &.--disabled {
+            cursor: not-allowed;
+            background: #e5e5e5a8;
+            color: #00000063;
+            border: 0.1px solid rgba(56, 56, 56, 0.11);
+        }
+    }
 
 }
 

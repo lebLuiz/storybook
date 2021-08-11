@@ -90,7 +90,7 @@ export default {
 <style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-$--line-border-fill: #FBBE2F;;
+$--line-border-fill: #000000;
 $--line-border-empty: #e0e0e0;
 
 .container-progress-bar-steps {
@@ -103,8 +103,8 @@ $--line-border-empty: #e0e0e0;
         justify-content: space-between;
         position: relative;
         margin-bottom: 30px;
-        max-width: 100%;
-        width: 350px;
+        width: 100%;
+        // width: 350px;
 
         &::before {
             content: ""; /* Mandatory with ::before */

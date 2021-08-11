@@ -1,6 +1,14 @@
 <template>
-    <a :style="{ 'fontSize': `${size}px`, 'fontWeight': weight ? weight : '' }"
-        :href="href">{{ title }}</a>
+    <div>
+        <a v-if="href && title" :style="{ 'fontSize': `${size}px`, 'fontWeight': weight ? weight : '', 'cursor': 'pointer' }"
+            @click="redirect">{{ title }}</a>
+
+        <!-- IF YOU WANT TO DEAL WITH ELEMENTS AND A SPECIFIC ROUTE TREATMENT (ex: VueRouter) -->
+        <slot v-if="!href" name="link-redirect" >
+
+        </slot>
+    </div>
+    
 </template>
 
 <script>
@@ -11,7 +19,7 @@ export default {
     props: {
         title: {
             type: String,
-            required: true,
+            required: false,
         },
         href: {
             type: String,
@@ -28,6 +36,19 @@ export default {
             required: false,
         },
     },
+
+    methods: {
+        redirect() {
+            // Is path:
+            if (this.href[0] === '/') {
+                window.location.pathname = this.href;
+            }
+            // Is URL Ancora:
+            else {
+                window.location.href = this.href;
+            }
+        },
+    },
 }
 
 </script>
@@ -42,6 +63,7 @@ a {
     font-weight: normal;
     font-size: 14px;
     line-height: 15px;
+    cursor: pointer;
 }
 
 @media only screen and (max-width: 550px) {

@@ -13,6 +13,11 @@ Vue.use(VueRouter)
 
 const routes = [
     {
+        path: '/',
+        redirect: '/entrar',
+    },
+
+    {
         name: 'home',
         path: '/home',
         component: Home,

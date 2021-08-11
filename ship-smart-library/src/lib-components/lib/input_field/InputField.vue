@@ -1,21 +1,33 @@
 <template>
   <div class="input-field" :class="{ '--max-width-normal': inputMaxWidthNormal }">
-    <input
+
+    <the-mask v-if="mask"
       class="input"
-      :type="type"
+      :type="typeClone"
+      :placeholder="placeholder ? placeholder : ''"
+      :class="{ '--disabled': disabled, '--password-type': typeField === 'password' }"
+      :mask="mask"
+      :value="value"
+      @input="$emit('input', $event)"
+      :disabled="disabled" />
+
+    <input
+      v-else
+      class="input"
+      :type="typeClone"
       :placeholder="placeholder ? placeholder : ''"
       :class="{ '--disabled': disabled, '--password-type': typeField === 'password' }"
       :value="value"
-      @input="sendValue"
+      @input="$emit('input', $event.target.value)"
       :disabled="disabled"
-      :maxlength="checkMaximumSize"
+      :maxlength="maxLength"
     />
 
     <svg
       v-if="typeField === 'password'"
       class="icon-field"
       :class="{ '--disabled': disabled }"
-      @click.prevent="changeType"
+      @click="changeType"
 	  
       width="24"
       height="14"
@@ -34,10 +46,10 @@
     </svg>
 
     <svg 
-      v-if="typeField === 'text' && filterCep === true && verification === true"
+      v-if="withCheckSearch"
       class="icon-field"
-      :class="{ '--search': filterCep, '--disabled': disabled }"
-      @click.prevent="searchMethod"
+      :class="{ '--search': !disabled, '--disabled': disabled }"
+      @click.prevent="$emit('onSearchIcon')"
 
       xmlns="http://www.w3.org/2000/svg"
       height="18px"
@@ -52,23 +64,29 @@
 </template>
 
 <script>
+import { TheMask } from 'vue-the-mask';
+
 export default {
   name: "InputField",
 
   data() {
     return {
-      type: null,
+      typeClone: this.typeField,
     };
+  },
+
+  components: {
+    TheMask,
   },
 
   watch: {
     typeField(newV, oldV) {
-      if (newV != oldV) this.type = newV;
+      if (newV != oldV) this.typeClone = newV;
     },
   },
 
   mounted() {
-    this.type = this.typeField;
+    this.typeClone = this.typeField;
   },
 
   props: {
@@ -78,7 +96,7 @@ export default {
     },
 
     value: {
-      type: String || Number || Boolean || Array || Object || Function,
+      type: [String, Number],
       required: false,
     },
 
@@ -92,142 +110,27 @@ export default {
       required: false,
     },
 
-    // maxLengthInput:
-    maxLength6: { type: Boolean },
-    maxLength15: { type: Boolean },
-    maxLength20: { type: Boolean },
-    maxLength60: { type: Boolean },
-    maxLength85: { type: Boolean },
+    mask: {
+      type: [String, Array],
+      required: false,
+    },
 
-    filterNumberAddress: { type: Boolean },
-    filterCpf: { type: Boolean },
-    filterCnpj: { type: Boolean },
-    filterRg: { type: Boolean },
-    filterPhone: { type: Boolean },
-    filterCep: { type: Boolean },
-    filterUf: { type: Boolean },
+    withCheckSearch: { type: Boolean },
+    maxLength: { 
+      type: Number,
+      default: Infinity,
+    },
 
     inputMaxWidthNormal: { type: Boolean },
-
-    verification: { type: Boolean },
-  },
-
-  computed: {
-    checkMaximumSize() {
-      if (this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
-        return 6;
-      } else if (this.maxLength15 && !this.maxLength6 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
-        return 15;
-      } else if (this.maxLength20 && !this.maxLength6 && !this.maxLength15 && !this.maxLength60 && !this.maxLength85 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
-        return 20;
-      } else if (this.maxLength60 && !this.maxLength85 && !this.maxLength20 && !this.maxLength15 && !this.maxLength6 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
-        return 60;
-      } else if (this.maxLength85 && !this.maxLength60 && !this.maxLength20 && !this.maxLength15 && !this.maxLength6 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
-        return 85;
-      } else if (this.filterPhone && !this.filterCep && !this.filterCpf && !this.filterUf && !this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85) {
-        return 25;
-      } else if (this.filterCep && !this.filterPhone && !this.filterPhone && !this.filterUf && !this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85) {
-        return 13;
-      } else if (this.filterUf && !this.filterCep && !this.filterPhone && !this.filterPhone && !this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85) {
-        return 2;
-      } else{
-        return Infinity;
-      }
-    }
   },
 
   methods: {
     changeType() {
-      if (this.type === "password") {
-        this.type = "text";
-      } else if (this.type === "text") {
-        this.type = "password";
+      if (this.typeClone == "password") {
+        this.typeClone = "text";
+      } else if (this.typeClone == "text") {
+        this.typeClone = "password";
       }
-    },
-    searchMethod() {
-      this.$emit('searchIconFilterClick');
-    },
-
-    sendValue($e) {
-      if (this.filterCpf === true && !this.filterPhone && !this.filterCep && !this.filterUf) {
-
-        const vetMask = '###.###.###-##'.split("");
-        const numCpf = $e.target.value.replace(/\D/g, "");
-        const cursor = $e.target.selectionStart;
-        const tecla = (window.event) ? event.keyCode : event.which;
-
-        for (let i=0; i<numCpf.length; i++) {
-          vetMask.splice(vetMask.indexOf("#"), 1, numCpf[i]);
-        }
-
-        $e.target.value = vetMask.join("");
-
-        if (tecla != 37 && cursor == 3 || cursor == 7 || cursor == 11) {
-          $e.target.setSelectionRange(cursor+1, cursor+1);
-        } else {
-          $e.target.setSelectionRange(cursor, cursor);
-        }
-
-      } else if (this.filterCnpj === true && !this.filterCpf && !this.filterPhone && !this.filterCep && !this.filterUf) {
-        const vetMask = '##.###.###/####-##'.split("");
-        const numCpf = $e.target.value.replace(/\D/g, "");
-        const cursor = $e.target.selectionStart;
-        const tecla = (window.event) ? event.keyCode : event.which;
-        
-        for (let i=0; i<numCpf.length; i++) {
-          vetMask.splice(vetMask.indexOf("#"), 1, numCpf[i]);
-        }
-
-        $e.target.value = vetMask.join("");
-
-        if (tecla != 37 && cursor == 3 || cursor == 7 || cursor == 11) {
-          $e.target.setSelectionRange(cursor+1, cursor+1);
-        } else {
-          $e.target.setSelectionRange(cursor, cursor);
-        }
-      } else if (this.filterRg === true && !this.filterCpf && !this.filterPhone && !this.filterCep && !this.filterUf) {
-        const vetMask = '##.###.###-#'.split("");
-        const numCpf = $e.target.value.replace(/\D/g, "");
-        const cursor = $e.target.selectionStart;
-        const tecla = (window.event) ? event.keyCode : event.which;
-
-        for (let i=0; i<numCpf.length; i++) {
-          vetMask.splice(vetMask.indexOf("#"), 1, numCpf[i]);
-        }
-
-        $e.target.value = vetMask.join("");
-
-        if (tecla != 37 && cursor == 3 || cursor == 7 || cursor == 11) {
-          $e.target.setSelectionRange(cursor+1, cursor+1);
-        } else {
-          $e.target.setSelectionRange(cursor, cursor);
-        }
-      } else if (this.filterPhone === true && !this.filterCpf && !this.filterCep && !this.filterUf) {
-        $e.target.value=$e.target.value.replace(/\D/g,"")
-        $e.target.value=$e.target.value.replace(/^(\d)/,"+$1")
-        $e.target.value=$e.target.value.replace(/(.{3})(\d)/,"$1($2")
-        $e.target.value=$e.target.value.replace(/(.{6})(\d)/,"$1)$2")
-        if($e.target.value.length == 12) {
-          $e.target.value=$e.target.value.replace(/(.{1})$/,"-$1")
-        } else if ($e.target.value.length == 13) {
-          $e.target.value=$e.target.value.replace(/(.{2})$/,"-$1")
-        } else if ($e.target.value.length == 14) {
-          $e.target.value=$e.target.value.replace(/(.{3})$/,"-$1")
-        } else if ($e.target.value.length == 15) {
-          $e.target.value=$e.target.value.replace(/(.{4})$/,"-$1")
-        } else if ($e.target.value.length > 15) {
-          $e.target.value=$e.target.value.replace(/(.{4})$/,"-$1")
-        }
-      } else if (this.filterCep === true && !this.filterCpf && !this.filterPhone && !this.filterUf) {
-        $e.target.value=$e.target.value.replace(/\D/g,"")
-        $e.target.value=$e.target.value.replace(/(.{5})(\d)/,"$1-$2")
-      } else if (this.filterUf === true && !this.filterCpf && !this.filterPhone && !this.filterCep) {
-        $e.target.value = $e.target.value.toUpperCase()
-      } else if (this.filterNumberAddress === true) {
-        $e.target.value=$e.target.value.replace(/\D/g,"")
-      }
-
-      this.$emit("valueInput", $e.target.value);
     },
   },
 };

@@ -69,15 +69,15 @@
 
                 <nav>
                     <ul>
-                        <!-- CASO INSIRA UMA LISTA DE LINKS. IRÁ TRATAR COMO ROTA DO 'window' (próprio browser) -->
+                        <!-- IF YOU INSERT A LIST OF LINKS. WILL TREAT AS THE ROUTE OF THE 'window' (own browser): -->
                         <li v-for="(linkRedirect) in linksRedirected" :key="linkRedirect.srcOrpath">
-                            <a :class="{ '--link-selected': $route.path == linkRedirect.srcOrpath }"
+                            <a :class="{ '--link-selected': pathOrAncora(linkRedirect) }"
                                 @click="redirect(linkRedirect)">
                                 {{ linkRedirect.label }}
                             </a>
                         </li>
 
-                        <!-- CASO QUEIRA TRATAR COM ELEMENTOS E UM TRATAMENTO DE ROTA ESPECIFICA(ex: VueRouter)-->
+                        <!-- IF YOU WANT TO DEAL WITH ELEMENTS AND A SPECIFIC ROUTE TREATMENT (ex: VueRouter) -->
                         <slot v-if="!linksRedirected" name="paths" >
 
                         </slot>
@@ -90,8 +90,6 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
-
 export default {
     name: 'HeaderMenu',
 
@@ -106,11 +104,17 @@ export default {
             type: Array,
             required: false,
         },
-
+        
         openOptionsRedirect: {
             type: Boolean,
             required: false,
             default: false,
+        },
+    },
+
+    data() {
+        return {
+            activeHamburguerOptions: false,
         }
     },
 
@@ -119,8 +123,6 @@ export default {
     },
 
     computed: {
-        ...mapState(["activeHamburguerOptions"]),
-
         headerButtonMenu() {
             return document.querySelector('.header-button-menu');
         },
@@ -130,28 +132,35 @@ export default {
     },
 
     methods: {
-        ...mapMutations(["setActiveHamburguerOptions"]),
-
         watchOptionsRedirect() {
             if (this.openOptionsRedirect == true) {
-                console.log('abriu');
                 this.openOptionsRedirectMethod();
-                this.setActiveHamburguerOptions(true);
+                this.activeHamburguerOptions = true;
                 this.$emit('resOpenOptionsRedirectHamburguer', true);
             } else {
-                console.log('fechado');
                 this.closeOptionsRedirectMethod();
-                this.setActiveHamburguerOptions(false);
+                this.activeHamburguerOptions = false;
                 this.$emit('resOpenOptionsRedirectHamburguer', false);
             }
         },
 
-        redirect(linkRedirect) {
-            console.log('LINKRedirected: \n', )
-
+        pathOrAncora(linkRedirect) {
             // Is path:
             if (linkRedirect.srcOrpath[0] === '/') {
-                this.$router.push({ path: linkRedirect.srcOrpath }).catch(() => {});
+                if (window.location.pathname == linkRedirect.srcOrpath) return true
+                else return false
+            } 
+            // Is URL Ancora:
+            else {
+                if (window.location.href == linkRedirect.srcOrpath) return true
+                else return false
+            }
+        },
+
+        redirect(linkRedirect) {
+            // Is path:
+            if (linkRedirect.srcOrpath[0] === '/') {
+                window.location.pathname = linkRedirect.srcOrpath;
             } 
             // Is URL Ancora:
             else {
@@ -159,14 +168,15 @@ export default {
             }
 
             this.closeOptionsRedirectMethod();
-            this.setActiveHamburguerOptions(false);
+            this.activeHamburguerOptions = false;
+
             this.$emit('resOpenOptionsRedirectHamburguer', this.activeHamburguerOptions);
         },
 
 
         // MOBILE:
         activeHamburguer() {
-            this.setActiveHamburguerOptions(! this.activeHamburguerOptions);
+            this.activeHamburguerOptions = ! this.activeHamburguerOptions;
 
             if (this.activeHamburguerOptions) {
                 this.openOptionsRedirectMethod();

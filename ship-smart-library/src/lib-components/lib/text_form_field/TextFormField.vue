@@ -6,22 +6,33 @@
     <!-- INPUT -->
     <div v-if="type !== 'select' && type !== 'radio'"
       id="input-field" :class="{ '--max-width-normal': fieldMaxWidthNormal }">
-      <input class="input"
+
+      <the-mask v-if="mask"
+        class="input"
+        :class="{ '--disabled': inputDisabled, '--password-type': type === 'password' }"
+        :type="typeInputMoment"
+        :placeholder="placeholder ? placeholder : ''"
+        :disabled="inputDisabled" 
+        :mask="mask"
+        :value="value"
+        @input="sendValueInput($event, true)" />
+
+      <input v-else
+        class="input"
         :class="{ '--disabled': inputDisabled, '--password-type': type === 'password' }"
         :type="typeInputMoment"
         :placeholder="placeholder ? placeholder : ''"
         :disabled="inputDisabled"
         :value="value"
-        :maxlength="checkMaximumSize"
-
-        @input="sendValue"
+        :maxlength="maxLengthInput"
+        @input="sendValueInput($event, false)"
       />
 
       <svg
         v-if="type === 'password'"
         class="icon-field"
         :class="{ '--disabled': inputDisabled }"
-        @click.prevent="changeType"
+        @click="changeType"
       
         width="24"
         height="14"
@@ -40,10 +51,10 @@
       </svg>
 
       <svg 
-        v-if="typeInputMoment === 'text' && filterCep === true && verification === true"
+        v-if="withCheckSearch"
         class="icon-field"
-        :class="{ '--search': filterCep, '--disabled': disabled }"
-        @click.prevent="searchMethod"
+        :class="{ '--search': !disabled, '--disabled': disabled }"
+        @click.prevent="$emit('onSearchIcon')"
 
         xmlns="http://www.w3.org/2000/svg"
         height="18px"
@@ -76,7 +87,7 @@
     <!-- RADIO -->
     <div v-if="type === 'radio'"
       class="container-radio">
-      <div v-for="(item, index) in options" :key="index" @click="selectedElementRadio(item)"
+      <div v-for="(item, index) in options" :key="index" @click="$emit('selectedValue', item)"
         class="radio">
         <input id="id-radio" name="radio" type="radio"
           :disabled="option.disabled"
@@ -91,9 +102,14 @@
 </template>
 
 <script>
+import { TheMask } from 'vue-the-mask';
 
 export default {
   name: "TextFormField",
+
+  components: {
+    TheMask,
+  },
   
   props: {
     label: {
@@ -107,7 +123,7 @@ export default {
     },
 
     value: {
-      type: String || Number || Boolean || Array || Object || Function,
+      type: [String, Number],
       required: false,
     },
 
@@ -120,6 +136,18 @@ export default {
     inputDisabled: {
       type: Boolean,
       required: false,
+    },
+
+    mask: {
+      type: [String, Array],
+      required: false,
+    },
+
+    withCheckSearch: { type: Boolean },
+    
+    maxLengthInput: { 
+      type: Number,
+      default: Infinity,
     },
 
 
@@ -173,33 +201,17 @@ export default {
       default: () => {}
     },
 
-    // maxLengthInput:
-    maxLength6: { type: Boolean },
-    maxLength15: { type: Boolean },
-    maxLength20: { type: Boolean },
-    maxLength60: { type: Boolean },
-    maxLength85: { type: Boolean },
-
-    filterNumberAddress: { type: Boolean },
-    filterCpf: { type: Boolean },
-    filterCnpj: { type: Boolean },
-    filterRg: { type: Boolean },
-    filterPhone: { type: Boolean },
-    filterCep: { type: Boolean },
-    filterUf: { type: Boolean },
-
     fieldMaxWidthNormal: {
       type: Boolean,
       required: false,
       default: false,
     },
 
-    verification: { type: Boolean },
   },
 
   data() {
     return {
-      typeInputMoment: null,
+      typeInputMoment: this.type,
       openSelect: false,
     }
   },
@@ -215,7 +227,6 @@ export default {
   },
 
   computed: {
-
     msgFieldComputed() {
       if ((this.messageNotification != null || this.messageNotification != '') && (this.errorMessage == '' || this.errorMessage == null)) {
         return this.messageNotification;
@@ -226,125 +237,25 @@ export default {
     containsError() {
       return (this.error && (this.msgFieldComputed === this.errorMessage)) ? true : false;
     },
-
-    checkMaximumSize() {
-      if (this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
-        return 6;
-      } else if (this.maxLength15 && !this.maxLength6 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
-        return 15;
-      } else if (this.maxLength20 && !this.maxLength6 && !this.maxLength15 && !this.maxLength60 && !this.maxLength85 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
-        return 20;
-      } else if (this.maxLength60 && !this.maxLength85 && !this.maxLength20 && !this.maxLength15 && !this.maxLength6 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
-        return 60;
-      } else if (this.maxLength85 && !this.maxLength60 && !this.maxLength20 && !this.maxLength15 && !this.maxLength6 && !this.filterCep && !this.filterCpf && !this.filterUf && !this.filterPhone) {
-        return 85;
-      } else if (this.filterPhone && !this.filterCep && !this.filterCpf && !this.filterUf && !this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85) {
-        return 25;
-      } else if (this.filterCep && !this.filterPhone && !this.filterPhone && !this.filterUf && !this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85) {
-        return 13;
-      } else if (this.filterUf && !this.filterCep && !this.filterPhone && !this.filterPhone && !this.maxLength6 && !this.maxLength15 && !this.maxLength20 && !this.maxLength60 && !this.maxLength85) {
-        return 2;
-      } else{
-        return Infinity;
-      }
-    },
   },
 
   methods: {
     changeType() {
-      if (this.typeInputMoment === "password") {
+      if (this.typeInputMoment == "password") {
         this.typeInputMoment = "text";
-      } else if (this.typeInputMoment === "text") {
+      } else if (this.typeInputMoment == "text") {
         this.typeInputMoment = "password";
       }
     },
 
-    searchMethod() {
-      this.$emit('searchIconFilterClick');
-    },
-
-    sendValue($e) {
-
-      if (this.filterCpf === true && !this.filterPhone && !this.filterCep && !this.filterUf) {
-
-        const vetMask = '###.###.###-##'.split("");
-        const numCpf = $e.target.value.replace(/\D/g, "");
-        const cursor = $e.target.selectionStart;
-        const tecla = (window.event) ? event.keyCode : event.which;
-
-        for (let i=0; i<numCpf.length; i++) {
-          vetMask.splice(vetMask.indexOf("#"), 1, numCpf[i]);
-        }
-
-        $e.target.value = vetMask.join("");
-
-        if (tecla != 37 && cursor == 3 || cursor == 7 || cursor == 11) {
-          $e.target.setSelectionRange(cursor+1, cursor+1);
-        } else {
-          $e.target.setSelectionRange(cursor, cursor);
-        }
-
-      } else if (this.filterCnpj === true && !this.filterCpf && !this.filterPhone && !this.filterCep && !this.filterUf) {
-        const vetMask = '##.###.###/####-##'.split("");
-        const numCpf = $e.target.value.replace(/\D/g, "");
-        const cursor = $e.target.selectionStart;
-        const tecla = (window.event) ? event.keyCode : event.which;
-        
-        for (let i=0; i<numCpf.length; i++) {
-          vetMask.splice(vetMask.indexOf("#"), 1, numCpf[i]);
-        }
-
-        $e.target.value = vetMask.join("");
-
-        if (tecla != 37 && cursor == 3 || cursor == 7 || cursor == 11) {
-          $e.target.setSelectionRange(cursor+1, cursor+1);
-        } else {
-          $e.target.setSelectionRange(cursor, cursor);
-        }
-      } else if (this.filterRg === true && !this.filterCpf && !this.filterPhone && !this.filterCep && !this.filterUf) {
-        const vetMask = '##.###.###-#'.split("");
-        const numCpf = $e.target.value.replace(/\D/g, "");
-        const cursor = $e.target.selectionStart;
-        const tecla = (window.event) ? event.keyCode : event.which;
-
-        for (let i=0; i<numCpf.length; i++) {
-          vetMask.splice(vetMask.indexOf("#"), 1, numCpf[i]);
-        }
-
-        $e.target.value = vetMask.join("");
-
-        if (tecla != 37 && cursor == 3 || cursor == 7 || cursor == 11) {
-          $e.target.setSelectionRange(cursor+1, cursor+1);
-        } else {
-          $e.target.setSelectionRange(cursor, cursor);
-        }
-      } else if (this.filterPhone === true && !this.filterCpf && !this.filterCep && !this.filterUf) {
-        $e.target.value=$e.target.value.replace(/\D/g,"")
-        $e.target.value=$e.target.value.replace(/^(\d)/,"+$1")
-        $e.target.value=$e.target.value.replace(/(.{3})(\d)/,"$1($2")
-        $e.target.value=$e.target.value.replace(/(.{6})(\d)/,"$1)$2")
-        if($e.target.value.length == 12) {
-          $e.target.value=$e.target.value.replace(/(.{1})$/,"-$1")
-        } else if ($e.target.value.length == 13) {
-          $e.target.value=$e.target.value.replace(/(.{2})$/,"-$1")
-        } else if ($e.target.value.length == 14) {
-          $e.target.value=$e.target.value.replace(/(.{3})$/,"-$1")
-        } else if ($e.target.value.length == 15) {
-          $e.target.value=$e.target.value.replace(/(.{4})$/,"-$1")
-        } else if ($e.target.value.length > 15) {
-          $e.target.value=$e.target.value.replace(/(.{4})$/,"-$1")
-        }
-      } else if (this.filterCep === true && !this.filterCpf && !this.filterPhone && !this.filterUf) {
-        $e.target.value=$e.target.value.replace(/\D/g,"")
-        $e.target.value=$e.target.value.replace(/(.{5})(\d)/,"$1-$2")
-      } else if (this.filterUf === true && !this.filterCpf && !this.filterPhone && !this.filterCep) {
-        $e.target.value = $e.target.value.toUpperCase()
-      } else if (this.filterNumberAddress === true) {
-        $e.target.value=$e.target.value.replace(/\D/g,"")
+    sendValueInput($event, withMask) {
+      if (withMask == true) {
+        this.$emit('onInput', $event);
+        this.filterMethod($event);
+      } else {
+        this.$emit('onInput', $event.target.value);
+        this.filterMethod($event.target.value);
       }
-
-      this.filterMethod($e.target.value);
-      this.$emit("valueInput", $e.target.value);
     },
 
 
@@ -398,11 +309,6 @@ export default {
     },
     closeOptionsSelect(element) {
       if (element.classList != null) element.classList.remove("is-active");
-    },
-
-    // FUNCTIONS OF RADIO:
-    selectedElementRadio(value) {
-      this.$emit('selectedValue', value);
     },
 
   },
@@ -564,6 +470,7 @@ $color2: #FBBE2F;
         display: flex;
         flex-direction: column;
         transition: width 0.3s ease;
+        z-index: 2;
 
         .dropdown-list__item {
           transition: transform 0.3s ease;

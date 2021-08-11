@@ -1,5 +1,5 @@
 <template>
-  <label class="label">{{ labelField }}:</label>
+  <label class="label">{{ labelField }}</label>
 </template>
 
 <script>

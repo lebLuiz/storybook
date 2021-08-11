@@ -132,14 +132,6 @@ export default {
     },
 
     methods: {
-
-        // watchOptionsRedirect() {
-        //     if (this.openOptionsRedirect == true) {
-        //         this.openOptionsRedirectMethod();
-        //     } else {
-        //         this.closeOptionsRedirectMethod();
-        //     }
-        // },
         watchOptionsRedirect() {
             if (this.openOptionsRedirect == true) {
                 this.openOptionsRedirectMethod();
